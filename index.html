@@ -38,6 +38,7 @@
                 textarea = getNode('.chat textarea'),
                 chatName = getNode('.chat-name'),
                 statusDefault = statusNode.textContent,
+                messages = getNode('.chat-messages'),
                 setStatus = function(s){
                     statusNode.textContent = s;
                     
@@ -63,6 +64,23 @@
                 
                 if(socket !== undefined){
                     console.log('Ok!');
+                    
+                    
+                    // Listen for output
+                    socket.on('output', function(data){
+                        if(data.length){
+                            // Loop thourgh results
+                            for(var x = 0; x < data.length; x = x + 1){
+                                var message = document.createElement('div');
+                                message.setAttribute('class', 'chat-message');
+                                message.textContent = data[x].name + ": " + data[x].message;
+                                
+                                // Append
+                                messages.appendChild(message);
+                                messages.insertBefore(message, messages.firstChild);
+                            }
+                        }
+                    });
                     
                     // Listen for a status
                     socket.on('status', function(data){
